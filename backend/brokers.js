@@ -1,5 +1,14 @@
 export const BROKERS = [
   {
+    id: "tradingview",
+    name: "TradingView",
+    tvPrefix: "TV",
+    minLot: 0.01,
+    lotStep: 0.01,
+    goldContractOz: 100,
+    notes: "TradingView chart + Yahoo mid price. No broker spread. Use as clean analysis, then map to Exness/XM.",
+  },
+  {
     id: "exness",
     name: "Exness",
     tvPrefix: "EXNESS",
@@ -20,6 +29,24 @@ export const BROKERS = [
 ];
 
 const SPREAD_PRICE = {
+  tradingview: {
+    XAUUSD: 0,
+    XAGUSD: 0,
+    EURUSD: 0,
+    GBPUSD: 0,
+    USDJPY: 0,
+    USDCHF: 0,
+    AUDUSD: 0,
+    USDCAD: 0,
+    NZDUSD: 0,
+    US30: 0,
+    NAS100: 0,
+    SPX500: 0,
+    USOIL: 0,
+    NATGAS: 0,
+    BTCUSD: 0,
+    ETHUSD: 0,
+  },
   exness: {
     XAUUSD: 0.12,
     XAGUSD: 0.018,

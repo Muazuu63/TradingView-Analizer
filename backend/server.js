@@ -77,6 +77,7 @@ app.get("/api/overview", async (req, res) => {
           style: a.trade.style,
           rsi: a.indicators.rsi,
           adx: a.indicators.adx,
+          engines: a.engines.summary,
         };
       } catch (err) {
         return {

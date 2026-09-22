@@ -158,7 +158,7 @@ export default function App() {
   const [q, setQ] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(true);
-  const [broker, setBroker] = useState("exness");
+  const [broker, setBroker] = useState("tradingview");
   const [tab, setTab] = useState("setup");
 
   async function loadOverview(curTf) {
@@ -224,7 +224,7 @@ export default function App() {
         <div className="logo">
           <div className="logo-mark" />
           PulseDesk
-          <span className="sub">BUY / SELL · tuki TP-SL · Exness / XM</span>
+          <span className="sub">BUY / SELL · 9 engines · TV / Exness / XM</span>
         </div>
         <input
           className="search"
@@ -240,6 +240,7 @@ export default function App() {
           ))}
         </div>
         <div className="tf-row">
+          <button className={`tf-btn ${broker === "tradingview" ? "active" : ""}`} onClick={() => setBroker("tradingview")}>TradingView</button>
           <button className={`tf-btn ${broker === "exness" ? "active" : ""}`} onClick={() => setBroker("exness")}>Exness</button>
           <button className={`tf-btn ${broker === "xm" ? "active" : ""}`} onClick={() => setBroker("xm")}>XM</button>
         </div>
@@ -305,9 +306,10 @@ export default function App() {
           </div>
 
           <div className="tabs">
-            <button className={tab === "setup" ? "on" : ""} onClick={() => setTab("setup")}>BUY + SELL indicator</button>
-            <button className={tab === "broker" ? "on" : ""} onClick={() => setTab("broker")}>{broker.toUpperCase()} analysis</button>
-            <button className={tab === "ta" ? "on" : ""} onClick={() => setTab("ta")}>Indicators</button>
+            <button className={tab === "setup" ? "on" : ""} onClick={() => setTab("setup")}>BUY + SELL</button>
+            <button className={tab === "engines" ? "on" : ""} onClick={() => setTab("engines")}>Signal engines</button>
+            <button className={tab === "broker" ? "on" : ""} onClick={() => setTab("broker")}>{broker === "tradingview" ? "TradingView" : broker.toUpperCase()} analysis</button>
+            <button className={tab === "ta" ? "on" : ""} onClick={() => setTab("ta")}>Classic TA</button>
           </div>
 
           {loading && !detail ? <div className="loading">Loading analysis...</div> : null}
@@ -344,6 +346,34 @@ export default function App() {
               </div>
               <Ladder setup={detail.buy} price={quote?.price} digits={digits} preferred={preferred === "BUY"} />
               <Ladder setup={detail.sell} price={quote?.price} digits={digits} preferred={preferred === "SELL"} />
+            </div>
+          )}
+
+          {tab === "engines" && detail?.engines && (
+            <div className="eng-wrap">
+              <div className="eng-sum">
+                <span className={`badge ${clsBias(detail.engines.summary.consensus)}`}>{detail.engines.summary.consensus}</span>
+                <span>{detail.engines.summary.text}</span>
+                <span className="conf">avg conf {detail.engines.summary.confidence}%</span>
+              </div>
+              <div className="eng-grid">
+                {detail.engines.list.map((e) => (
+                  <div key={e.id} className={`eng-card ${e.side.toLowerCase()}`}>
+                    <div className="eng-top">
+                      <div>
+                        <div className="eng-name">{e.name}</div>
+                        <div className="eng-style">{e.style}</div>
+                      </div>
+                      <span className={`badge ${clsBias(e.side)}`}>{e.side}</span>
+                    </div>
+                    <div className="eng-bar"><div style={{ width: `${e.conf}%` }} /></div>
+                    <div className="eng-conf">{e.conf}%</div>
+                    <p className="eng-why">{e.reason}</p>
+                    <p className="eng-note">{e.note}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="warn">Original in-house logic inspired by public TA ideas. Not copies of paid TradingView scripts (Swift / ZynAlgo / JOAT / Ginz / ProfitAlgo / AurumNarra).</p>
             </div>
           )}
 

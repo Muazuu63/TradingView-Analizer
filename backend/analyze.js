@@ -1,6 +1,7 @@
 import { rsi, macd, atr, bollinger, stochastic, adx, sma, ema, swings, volumeTrend } from "./ta.js";
 import { TIMEFRAMES } from "./markets.js";
 import { BROKERS, typicalSpread, usdPerTuki, tvSymbolFor } from "./brokers.js";
+import { runEngines } from "./engines.js";
 
 function round(n, d) {
   if (n == null || Number.isNaN(n)) return null;
@@ -248,9 +249,36 @@ export function analyzeMarket(market, candles, tfKey) {
   };
 
   const scored = scoreBias(ind);
+  const engines = runEngines(candles);
+  if (engines.summary.consensus.includes("BUY")) {
+    scored.buy += 2;
+    scored.notes.unshift(`Engine cluster ${engines.summary.text}`);
+  } else if (engines.summary.consensus.includes("SELL")) {
+    scored.sell += 2;
+    scored.notes.unshift(`Engine cluster ${engines.summary.text}`);
+  } else {
+    scored.notes.unshift(`Engine cluster ${engines.summary.text}`);
+  }
+  const total = scored.buy + scored.sell || 1;
+  scored.buyPct = Math.round((scored.buy / total) * 100);
+  scored.sellPct = 100 - scored.buyPct;
+  if (scored.buy - scored.sell >= 3) scored.bias = "STRONG BUY";
+  else if (scored.buy - scored.sell >= 1) scored.bias = "BUY";
+  else if (scored.sell - scored.buy >= 3) scored.bias = "STRONG SELL";
+  else if (scored.sell - scored.buy >= 1) scored.bias = "SELL";
+  else scored.bias = "NEUTRAL";
+
   const buy = buildSetup("BUY", market, candles, tfKey, ind);
   const sell = buildSetup("SELL", market, candles, tfKey, ind);
-  const preferred = scored.bias.includes("SELL") ? "SELL" : scored.bias.includes("BUY") ? "BUY" : (scored.buyPct >= 50 ? "BUY" : "SELL");
+  const preferred = engines.summary.consensus.includes("SELL")
+    ? "SELL"
+    : engines.summary.consensus.includes("BUY")
+      ? "BUY"
+      : scored.bias.includes("SELL")
+        ? "SELL"
+        : scored.bias.includes("BUY")
+          ? "BUY"
+          : (scored.buyPct >= 50 ? "BUY" : "SELL");
   const trade = preferred === "BUY" ? buy : sell;
 
   const brokers = BROKERS.map((b) => ({
@@ -305,6 +333,7 @@ export function analyzeMarket(market, candles, tfKey) {
       volumeRatio: round(ind.vol.ratio, 2),
     },
     signal: scored,
+    engines,
     preferred,
     trade,
     buy,

@@ -336,9 +336,26 @@ button, select, input { font-family: inherit; }
 .spread-chip { font-size: 11px; background: var(--bg4); border: 1px solid var(--line); padding: 4px 8px; border-radius: 4px; color: var(--gold); }
 .ta-wrap { padding: 12px 16px 20px; background: var(--bg2); }
 
+.eng-wrap { padding: 12px 16px 20px; background: var(--bg2); }
+.eng-sum { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.eng-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.eng-card { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+.eng-card.buy { box-shadow: inset 3px 0 0 var(--green); }
+.eng-card.sell { box-shadow: inset 3px 0 0 var(--red); }
+.eng-card.wait { box-shadow: inset 3px 0 0 var(--dim); }
+.eng-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.eng-name { font-weight: 700; color: #fff; font-size: 13px; }
+.eng-style { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.eng-bar { height: 4px; background: var(--bg4); border-radius: 99px; margin: 8px 0 4px; overflow: hidden; }
+.eng-bar div { height: 100%; background: var(--gold); }
+.eng-conf { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--muted); }
+.eng-why { font-size: 12px; color: var(--text); margin-top: 8px; line-height: 1.4; }
+.eng-note { font-size: 10px; color: var(--dim); margin-top: 6px; line-height: 1.35; }
+
 @media (max-width: 1100px) {
   .sidebar { width: 220px; }
   .setup-grid, .broker-grid { grid-template-columns: 1fr; }
+  .eng-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
   .sidebar { display: none; }
